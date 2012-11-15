@@ -7,8 +7,8 @@ class Welcome extends CI_Controller {
 		// Set up the SMF SSI integration
 		require($this->config->item('ssi_url'));
 		// Change the login and logout URL to point to our application
-		$_SESSION['login_url'] = $base_url() . $_SERVER['PHP_SELF']; 
-		$_SESSION['logout_url'] = $base_url() . $_SERVER['PHP_SELF'];
+		$_SESSION['login_url'] = base_url() . $_SERVER['PHP_SELF']; 
+		$_SESSION['logout_url'] = base_url() . $_SERVER['PHP_SELF'];
 		// Load up the session library
 		$this->load->library('session');
 		// Set up the user session with information from SMF
