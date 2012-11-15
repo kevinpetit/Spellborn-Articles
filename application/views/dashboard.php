@@ -1,18 +1,18 @@
 <?php $this->load->view('layout/header.php'); ?>
-<div class=contentwrapper>
-    <div class="left">
+    <div class="row">
+        <div class="twelve columns panel">
+            <div style="text-align: center;">Welcome <strong><?php echo $this->session->userdata('username'); ?></strong> to the <?php $this->config->item('sitename'); ?> article system administration!</div>
+        </div>
+    </div>
 
-<div class=a-info><strong>Info:</strong> We're still working hard on this part of the system. Not all features are available.</div>
-	<br>
-    Welcome <strong><?php echo $this->session->userdata('username'); ?></strong> to the Spellborn Fan Hub Article system!
-    <br>
-    <h1>Your saved articles</h1>
-    <h2 class=anotice>Note that you still need to submit these to us in order to get them reviewed </h2>
-    <div class="aetable">
-        <table border="0" cellpadding="4" cellspacing="0">
+    <div class="nine columns">
+
+    <h2>Your saved articles</h2>
+    <div class="alert-box">Note that you still need to submit these to us in order to get them reviewed</div>
+    <table border="0" cellpadding="4" cellspacing="0" width="100%">
         <thead>
-        <tr>
-        <th>ID</th><th>Title</th><th>Last edit</th><th>Edit</th><th>Submit</th></tr>
+            <tr>
+                <th>ID</th><th>Title</th><th>Last edit</th><th>Edit</th><th>Submit</th></tr>
         </thead>
         <tbody>
        <?php        
@@ -26,27 +26,25 @@
             echo '<td>'; echo $row->id; echo '</td>';
             echo '<td>'; echo $row->title; echo '</td>';
             echo '<td>'; echo $row->lastedit; echo '</td>';
-	    echo '<td> <a class=editlink href=http://www.spellborn.org/articles/index.php/submit/edit/';
+	    echo '<td> <a href="'. base_url() .'index.php/submit/edit/';
 	    echo $row->id;
-	    echo '>Edit</a>';
-	    echo '<td><a class=submitlink href=http://www.spellborn.org/articles/index.php/submit/confirmsubmit/';
+	    echo '">Edit</a>';
+	    echo '<td><a href="'. base_url() .'index.php/submit/confirmsubmit/';
 	    echo $row->id;
-	    echo '>Submit</a></td>';
+	    echo '">Submit</a></td>';
             echo '</tr>';
         }
         ?> 
         </tbody>
-        </table>
+    </table>
 
-    </div>
-    <h1>Your submitted articles</h1>
-    <h2 class="anotice">Please note that these aren't approved yet.</h2>
-    <div class="aetable">
-    <table border="0" cellpadding="4" cellspacing="0">
-    <thead>
-    <tr>
-    <th>ID</th><th>Title</th><th>Submitted on</th><th>Unsubmit</th></tr>
-    </thead>
+    <h2>Your submitted articles</h2>
+    <div class="alert-box">Please note that these aren't approved yet.</div>
+    <table border="0" cellpadding="4" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>ID</th><th>Title</th><th>Submitted on</th><th>Unsubmit</th></tr>
+        </thead>
     <tbody>
     <?php
         $this->db->select('id, title, submittedon');
@@ -59,24 +57,22 @@
             echo '<td>'; echo $row->id; echo '</td>';
             echo '<td>'; echo $row->title; echo '</td>';
 	    echo '<td>'; echo $row->submittedon; echo '</td>';
-	    echo '<td><a class=unsubmitlink href=http://www.spellborn.org/articles/index.php/submit/unsubmit/';
+	    echo '<td><a href="'. base_url() .'index.php/submit/unsubmit/';
 	    echo $row->id;
-	    echo '>Unsubmit</a></td>';
+	    echo '">Unsubmit</a></td>';
             echo '</tr>';
         }
         ?> 
         </tbody>
-        </table>
-    </div>
+    </table>
     
     <h1>Your checked articles</h1>
-    <h2 class="anotice">Please note that you'll need to review our remarks and update your article accordingly.</h2>
-    <div class="aetable">
-    <table border="0" cellpadding="4" cellspacing="0">
-    <thead>
-    <tr>
-    <th>ID</th><th>Title</th><th>Remarks</th><th>Edit</th><th>Submit</th></tr>
-    </thead>
+    <div class="alert-box">Please note that you'll need to review our remarks and update your article accordingly.</div>
+    <table border="0" cellpadding="4" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+            <th>ID</th><th>Title</th><th>Remarks</th><th>Edit</th><th>Submit</th></tr>
+        </thead>
     <tbody>
     <?php
         $this->db->select('id, title, remarks, publish');
@@ -90,23 +86,22 @@
             echo '<td>'; echo $row->id; echo '</td>';
             echo '<td>'; echo $row->title; echo '</td>';
             echo '<td>'; echo $row->remarks; echo '</td>';
-	    echo '<td> <a class=editlink href=http://www.spellborn.org/articles/index.php/submit/edit/';
+	    echo '<td> <a href="'. base_url() .'index.php/submit/edit/';
 	    echo $row->id;
-	    echo '>Edit</a>';
-	    echo '<td><a class=submitlink href=http://www.spellborn.org/articles/index.php/submit/confirmsubmit/';
+	    echo '">Edit</a>';
+	    echo '<td><a href="'. base_url() .'index.php/submit/confirmsubmit/';
 	    echo $row->id;
-	    echo '>Submit</a></td>';
-            echo '</tr>';
+	    echo '">Submit</a></td>';
+        echo '</tr>';
         }
         ?> 
         </tbody>
-        </table>
-    </div>
+    </table>
+
     
-        <h1>Your published articles</h1>
-    <h2 class="anotice">Thank you for your work! ;). Your articles listed below are now posted on our portal.</h2>
-    <div class="aetable">
-    <table border="0" cellpadding="4" cellspacing="0">
+    <h2>Your published articles</h2>
+    <div class="alert-box">Thank you for your work! ;). Your articles listed below are now posted on our portal.</div>
+    <table border="0" cellpadding="4" cellspacing="0" width="100%">
     <thead>
     <tr>
     <th>ID</th><th>Title</th></tr>
@@ -129,13 +124,13 @@
     <?php
 
     ?>
-    </div>
-           </div> 
-    <aside>
-    	<div class="a-bigbutton bred"><a href=http://www.spellborn.org/articles/index.php/submit>Submit a new article</a></div>
-        <div class="a-bigbutton bblack"><?php ssi_logout(); ?></div>
-    </aside>
-    
-    </div>
+</div>
+
+    <div class="three columns">
+        <aside>
+        	<a class="radius button" href="<?php echo base_url(); ?>index.php/submit">Submit a new article</a>
+            <div class="radius button alert"><?php ssi_logout(); ?></div>
+        </aside>   
+ </div>
 
 <?php $this->load->view('layout/footer.php'); ?>

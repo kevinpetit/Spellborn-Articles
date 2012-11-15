@@ -138,7 +138,8 @@ class Submit extends CI_Controller {
 		// Set the submit date and status
 		$data = array (
 			'submittedon' => date("Y-m-d"),
-			'submitted' => 1); 
+			'submitted' => 1,
+			'checked' => 0); 
 		// Update the info in the database
 		$this->db->where('id', $this->uri->segment(3,0));
 		// Update the articles database

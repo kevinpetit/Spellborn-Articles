@@ -1,50 +1,47 @@
 <?php $this->load->view('layout/header.php'); ?>
-<div class=contentwrapper>
-    <div class="left">
+    <div class="row">
+        <div class="twelve columns panel">
+            <div style="text-align: center;">Welcome <strong><?php echo $this->session->userdata('username'); ?></strong> to the <?php $this->config->item('sitename'); ?> article system administration!</div>
+        </div>
+    </div>
 
-<div class=a-info><strong>Info:</strong> We're still working hard on this part of the system. Not all features are available.</div>
-	<br>
-    Welcome <strong><?php echo $this->session->userdata('username'); ?></strong> to the Spellborn Fan Hub Article system administration!
-    <br>
-    
-    <h1>All submitted articles</h1>
-    <h2 class="anotice">Please note that these aren't approved yet.</h2>
-    <div class="aetable">
-    <table border="0" cellpadding="4" cellspacing="0">
-    <thead>
-    <tr>
-    <th>ID</th><th>Title</th><th>Author</th><th>Submitted on</th><th>Check</th></tr>
-    </thead>
+    <div class="nine columns">
+
+    <h2>All submitted articles</h2>
+    <div class="alert-box">Please note that these aren't approved yet and require moderation.</div>
+    <table border="0" cellpadding="4" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>ID</th><th>Title</th><th>Author</th><th>Submitted on</th><th>Moderate</th></tr>
+        </thead>
     <tbody>
-    <?php
-        $this->db->select('id, title, author, submittedon');
-        $this->db->where('submitted', true);
-		$this->db->where('publish', false);
-        $query = $this->db->get('articles');
-        foreach ($query->result() as $row) {
+        <?php
+            $this->db->select('id, title, author, submittedon');
+            $this->db->where('submitted', true);
+    		$this->db->where('publish', false);
+            $query = $this->db->get('articles');
+            foreach ($query->result() as $row) {
             echo '<tr>';
             echo '<td>'; echo $row->id; echo '</td>';
             echo '<td>'; echo $row->title; echo '</td>';
-	    echo '<td>'; echo $row->author; echo '</td>';
-	    echo '<td>'; echo $row->submittedon; echo '</td>';
-	    echo '<td><a class=checklink href=http://www.spellborn.org/articles/index.php/admin/check/';
-	    echo $row->id;
-	    echo '>Check</a></td>';
+    	    echo '<td>'; echo $row->author; echo '</td>';
+    	    echo '<td>'; echo $row->submittedon; echo '</td>';
+    	    echo '<td><a href='. base_url() .'index.php/admin/check/';
+    	    echo $row->id;
+    	    echo '>Moderate article</a></td>';
             echo '</tr>';
-        }
+            }
         ?> 
         </tbody>
-        </table>
-    </div>
+    </table>
 
-<h1>All approved articles</h1>
-    <h2 class="anotice">Please note that some of these might be published already.</h2>
-    <div class="aetable">
-    <table border="0" cellpadding="4" cellspacing="0">
-    <thead>
-    <tr>
-    <th>ID</th><th>Title</th><th>Author</th></tr>
-    </thead>
+    <h2>All approved articles</h2>
+    <div class="alert-box">Please note that some of these might be published already.</div>
+    <table border="0" cellpadding="4" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>ID</th><th>Title</th><th>Author</th></tr>
+        </thead>
     <tbody>
     <?php
         $this->db->select('id, title, author, publish');
@@ -64,12 +61,12 @@
     
     ?>
     </div>
-           </div> 
-    <aside>
-    	<div class="a-bigbutton bred"><a href=http://www.spellborn.org/articles/index.php/submit>Submit an article</a></div>
-        <div class="a-bigbutton bblack"><?php ssi_logout(); ?></div>
-    </aside>
-    
+
+    <div class="three columns">
+        <aside>
+        	<a class="radius button" href="<?php echo base_url() ?>index.php/submit">Submit a new article</a>
+            <div class="radius button alert"><?php ssi_logout(); ?></div>
+        </aside>
     </div>
 
 <?php $this->load->view('layout/footer.php'); ?>

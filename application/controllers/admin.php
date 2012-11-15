@@ -106,8 +106,8 @@ class Admin extends CI_Controller {
 		        'mt_allow_pings'=>1,  // 1 to allow trackbacks
 		        'post_type'=>'post',
 		        'mt_keywords'=>$keywords,
-		        'categories'=>array($category),
-				'custom_fields' =>  array($customfields)
+		        'categories'=>array($category)
+				//'custom_fields' =>  array($customfields)
 		    );
 		 
 		// Create the client object
