@@ -1,78 +1,104 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+/*
+| ADMIN CONTROLLER
+| Check if you are logged in and have rights to access the admin.
+| This controller allows access to the admin features.
+|
+| Author: Kevjoe - Vampire Trix
+| Email: kevin@kevjoe.com
+| Website: http://www.kevjoe.com
+|
+*/
+
 class Admin extends CI_Controller {
     
     public function index() {
-        // Load SSI file
-        require("/path/to/your/ssi/file"); // CHANGE THIS TO YOUR SMF SSI FILE
+        // Load SSI file to link with the forum. 
+        require($this->config->item('ssi_url')); // Change location in articles-config.php
         // Check if user is currently logged in.
         if ($context['user']['is_guest']) 
         {
-                        // If not logged in, show login form
+        	// The user is not logged in, so we should load the login view.
 			$this->load->view('login');
-	}
-	else 
+		}
+		else 
         {
-           // If logged in, check if the user has access to the admin.
-           // Checks if the user is in the usergroup 16, which is the portal staff.
-           if (in_array(16, $user_info['groups']))
+           // The user is logged in, so check if the user is an admin user.
+           if ($context['user']['is_admin'])
            {
-               // The user is in the portal staff, so show the admin panel
-	       $this->load->view('admin-dashboard');
+               // The user is an admin user, so load the admin dashboard.
+		       $this->load->view('admin-dashboard');
            }
            else
            {
-               // Looks like our user hasn't got access, so show him the normal dashboard.
+               // Looks like our user hasn't got access, so show him the normal user dashboard.
                $this->load->view('dashboard');
            }
        }
     }
     
     public function check() {
-
-	$this->load->view('admin-check.php');
+		// Load the article checker / let the admin review the article
+		$this->load->view('admin-check.php');
     }
     
     public function savecheck() {
-
-		$this->load->helper(array('form', 'url'));
+    	// Load up the form and url helper. This will add the check to the database.
+		$this->load->helper(array('form'));
+		// Load the database 
 		$this->load->database();
+		// Select the articles table
 		$this->db->get('articles');
+		// Set up the data to be posted to the database
 		$data = array (
-			'post' => $this->input->post('post'),
-			'remarks' => $this->input->post('remarks'),
-			'checked' => 1);
+			'post' => $this->input->post('post'), // the actual post
+			'remarks' => $this->input->post('remarks'), // the remarks made by an admin user
+			'checked' => 1); // the article has been checked, so it needs to be flagged as such in our database.
+		// Select the right article id in the database to update
 		$this->db->where('id', $this->input->post('id'));
+		// And, after all of this, submit the updated article to the database.
 		$this->db->update('articles', $data);
-		    
-		$this->load->view('save-succesfull');
-	
+		// Check if the database got updated.
+		if ($this->db->affected_rows() > 0) {
+			// The update was succesfull, so show succes page
+			$this->load->view('save-succesfull');
+		}
+		else {
+			// The update failed, so show failure page
+			$this->load->view('save-failed'); // TODO: make the save-failed file
+		}
     }
 	
 	public function approve() {
-	  include("../wp-includes/class-IXR.php");
-	  $this->db->select('id, title, post');
-      $this->db->where('id', $this->input->post('id'));
-      $query = $this->db->get('articles');
-      foreach ($query->result() as $row) 
-	  {
-	  		$this->db->get('articles');
-			$data = array ('publish' => 1);
-			$this->db->where('id', $this->input->post('id'));
-			$this->db->update('articles', $data);
-		
-	  	$customfields=array('key'=>'communityauthor', 'value'=>'community member' ); // Insert your custom values like this in Key, Value format
-		$title= $row->title; // $title variable will insert your blog title 
-		$body= $row->post; // $body will insert your blog content (article content)
-		$category= "Community"; // Comma seperated pre existing categories. Ensure that these categories exists in your blog.
-		$post_type= "Community";
-		$encoding = "UTF-8";
-		$keywords = "Article";
+		// Approve the article and submit it through to WordPress.
+		// Include the WordPress class-IXR.php file
+		include($this->config->item('ixr_url')); // Change location if needed in articles-config.php file
+		// Get all information from this post in the database. Select the id, title and postcontent from the database.
+		$this->db->select('id, title, post');
+		// From all that information get only the data with the submitted post ID.
+		$this->db->where('id', $this->input->post('id'));
+		// Set up the query to get this information
+		$query = $this->db->get('articles');
+		// set the published flag in the database to true
+		foreach ($query->result() as $row) {
+	  		$this->db->get('articles'); // Get the articles table
+			$data = array ('publish' => 1); // Set the publish flag to true
+			$this->db->where('id', $this->input->post('id')); // But only where the ID is equal to what has been posted
+			$this->db->update('articles', $data); // Update the database.
+
+			// Now, we have to set up the data that will be posted to WordPress using XML-RPC.
+			$title= $row->title; // $title variable will insert your blog title 
+			$body= $row->post; // $body will insert your blog content (article content)
+			$category= "uncategorized"; // Comma seperated pre existing categories. Ensure that these categories exists in your blog.
+			$encoding = "UTF-8";
+			$keywords = "Article";
 		 
-		 
+		 	// Clean up the values in order to prevent sql injection
 		    $title = htmlentities($title,ENT_NOQUOTES,$encoding);
 		    $keywords = htmlentities($keywords,ENT_NOQUOTES,$encoding);
 		 
+			// Set up the content parameters
 		    $content = array(
 		        'title'=>$title,
 		        'description'=>$body,
@@ -85,19 +111,22 @@ class Admin extends CI_Controller {
 		    );
 		 
 		// Create the client object
-		$client = new IXR_Client('http://www.yoursite.org/xmlrpc.php'); // CHANGE THIS TO YOUR WORDPRESS XMLRPC FILE
+		$client = new IXR_Client($this->config->item('xmlrpc_url')); // Change in the articles-config file.
+
+		// Your WordPress login information. Change in the articles-config file.
+		$username = $this->config->item('wp_username');
+		$password = $this->config->item('wp_password');
+
+		$params = array(0,$username,$password,$content,true); // Last parameter is 'true' which means post immideately, to save as draft set it as 'false'
 		 
-		 $username = "your user"; // CHANGE THIS TO YOUR USERNAME
-		 $password = "your password";  // CHANGE THIS TO YOUR WORDPRESS PASSWORD
-		 $params = array(0,$username,$password,$content,true); // Last parameter is 'true' which means post immideately, to save as draft set it as 'false'
-		 
-		// Run a query for PHP
+		// Submit to WordPress
 		if (!$client->query('metaWeblog.newPost', $params)) {
+			// Something went wrong, so submit the error message and stop the execution.
 		    die('Something went wrong - '.$client->getErrorCode().' : '.$client->getErrorMessage());
 		}
 		else
-		   $this->load->view('published-succesfully'); 
-	
+			// The post has been published succesfully, so show succes page!
+			$this->load->view('published-succesfully'); 
+		}
 	}
-	}
-	}
+}
