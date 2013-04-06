@@ -1,5 +1,15 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+ /*
+| WELCOME CONTROLLER
+| Check if you are logged in.
+|
+| Author: Kevjoe - Vampire Trix
+| Email: kevin@kevjoe.com
+| Website: http://www.kevjoe.com
+|
+*/
+
 class Welcome extends CI_Controller {
 
 	public function index()

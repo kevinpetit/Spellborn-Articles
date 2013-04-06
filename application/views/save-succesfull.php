@@ -4,7 +4,7 @@
 
     <strong><?php echo $this->session->userdata('username'); ?></strong>, your article has been succesfully saved!
     <br>
-    You can make edits to your article from your <a href=http://www.spellborn.org/articles>dashboard</a>.
+    You can make edits to your article from your <a href="<?php echo base_url() ?>">dashboard</a>.
        </div> 
     </div>
 

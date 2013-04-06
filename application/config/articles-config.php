@@ -53,7 +53,7 @@ $config['wp_password'] = 'yourpassword'; // Your WordPress password
 | General site information
 |
 */
-$config['sitename']	= 'My Article System'; // Your site's name. Will be used in emails and in the title tag of your browser.
+$config['sitename']	= 'Spellborn-Articles'; // Your site's name. Will be used in emails and in the title tag of your browser.
 $config['admin_email'] = 'your@ema.il'; // Your email. You will get notifications on this email address.
 
 /*
